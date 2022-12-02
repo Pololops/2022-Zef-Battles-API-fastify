@@ -1,0 +1,35 @@
+# OS X
+**/.DS_Store*
+**/Icon?
+**/._*
+
+# Windows
+**/Thumbs.db
+**/ehthumbs.db
+**/Desktop.ini
+
+# Linux
+**/.directory
+**/*~
+
+# npm
+**/node_modules
+*.gz
+
+# log
+**/*.log
+**/*.log.*
+
+# vscode
+.vs_code/
+
+# config
+**/.env
+**/sqitch.conf
+
+# uploads folder contains except .gitkeep file
+**/uploads/*
+!**/uploads/index.html
+
+# jest
+**/coverage
