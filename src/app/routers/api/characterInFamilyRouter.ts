@@ -1,20 +1,29 @@
 import { FastifyInstance, FastifyPluginOptions } from 'fastify'
 
-import { createSchema as createFamilySchema } from '../../schemas/familySchema'
 import { createSchema as createCharacterSchema } from '../../schemas/characterSchema'
 
 export default async (fastify: FastifyInstance, options: FastifyPluginOptions) => {
     /**
-   * GET /api/family
+   * GET /api/family/{familyId}/character
 	 * @summary Get all characters of a family order by name
    * @tags Character
 	 * @param {number} familyId.path.required - character identifier
 	 * @return {array<Character>} 200 - success response - application/json
+	 * @return {ApiError} 404 - character not found - application/json
    */
-  fastify.get<{ Params: { id: number } }>('/', async (request, reply) => {
-    const { id } = request.params
-    return reply.code(200).send({ method: 'GET', response: `All characters of the family number ${id}` })
-  })
+  fastify.route<{ Params: { id: number } }>({
+		method: 'GET',
+    url: '/',
+    handler: async (request, reply) => {
+			const { id } = request.params
+      reply
+				.code(200)
+				.send({ 
+					method: 'GET', 
+					response: `All characters of the family number ${id}`,
+				})
+    }
+	})
 
   /**
 	 * POST /api/family/{familyId}/character
@@ -38,9 +47,19 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
 	 * 		"family_id": 1
 	 * }
 	 */
-  fastify.post<{ Params: { id: number }, Body: { name: string, file: string, family_id: number } }>('/', createCharacterSchema, async (request, reply) => {
-    const { id } = request.params
-    const character = request.body
-    return reply.code(200).send({ method: 'POST', response: `Creation of a new character named ${character.name} in the family number ${id}` })
-  })
+  fastify.route<{ Params: { id: number }, Body: { name: string, file: string, family_id: number } }>({
+		method: 'POST',
+		url: '/',
+		schema: createCharacterSchema,
+		handler: async (request, reply) => {
+			const { id } = request.params
+			const character = request.body
+			reply
+				.code(200)
+				.send({ 
+					method: 'POST', 
+					response: `Creation of a new character named ${character.name} in the family number ${id}`,
+				})
+  	}
+	})
 }

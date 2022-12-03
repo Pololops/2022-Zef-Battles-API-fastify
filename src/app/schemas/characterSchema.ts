@@ -7,9 +7,11 @@ export const createSchema: FastifyPluginOptions = {
       properties: {
         name: {
           type: 'string',
+          minLength: 1
         },
         family_id: {
           type: 'number',
+          minimum: 1
         },
         file: {
           type: 'string',

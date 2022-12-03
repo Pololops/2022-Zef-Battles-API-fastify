@@ -73,7 +73,11 @@ import apiRouter from './api';
 
 export default async (fastify: FastifyInstance, options: FastifyPluginOptions) => {
   fastify.get('/', async (request, reply) => {
-    reply.code(200).send({ hello: 'world!' })
+    reply
+      .code(200)
+      .send({ 
+        hello: `welcome into the Zef's Battle backend API`,
+      })
   })
 
   fastify.register(apiRouter, { prefix: 'api' });

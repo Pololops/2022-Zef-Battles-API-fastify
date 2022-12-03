@@ -7,6 +7,7 @@ export const createSchema: FastifyPluginOptions = {
       properties: {
         name: {
           type: 'string',
+          minLength: 1
         }
       },
       required: ['name'],

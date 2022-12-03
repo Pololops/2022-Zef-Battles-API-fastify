@@ -14,10 +14,14 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
   fastify.route<{ Params: { id: number } }>({
     method: 'GET',
     url: '/:id(\\d+)',
-    schema: createCharacterSchema,
     handler: async (request, reply) => {
       const { id } = request.params
-      return reply.code(200).send({ method: 'GET', response: `The characters number ${id}` })
+      reply
+        .code(200)
+        .send({ 
+          method: 'GET', 
+          response: `The characters number ${id}`,
+        })
     }
   })
 
@@ -35,7 +39,12 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
     url: '/:id(\\d+)',
     handler: async (request, reply) => {
       const { id } = request.params
-      return reply.code(200).send({ method: 'DELETE', response: `Delete the character number ${id}` })
+      reply
+        .code(200)
+        .send({ 
+          method: 'DELETE', 
+          response: `Delete the character number ${id}`,
+        })
     }
   })
 }

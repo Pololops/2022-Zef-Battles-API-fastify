@@ -8,12 +8,22 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
    * GET /api/family
    * @summary Get all families order by name
    * @tags Family
-   * @param {boolean} withcharacters.query - get all characters in each family
+	 * @param {boolean} withcharacters.query - get all characters in each family
    * @return {array<Family>} 200 - success response - application/json
    */
-  fastify.get('/', async (request, reply) => {
-    return reply.code(200).send({ method: 'GET', response: 'All families' })
-  })
+  fastify.route<{ Querystring: { withcharacters?: true } }>({
+		method: 'GET',
+		url: '/',
+		handler: async (request, reply) => {
+			const { withcharacters } = request.query
+			reply
+				.code(200)
+				.send({ 
+					method: 'GET', 
+					response: `All families ${withcharacters ? 'with' : 'without'} their characters`,
+				})
+  	}
+	})
 
   /**
 	 * POST /api/family
@@ -32,10 +42,20 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
 	 *   "name": "Schtroumpfs"
 	 * }
 	 */
-  fastify.post<{ Body: { name: string } }>('/', createFamilySchema, async (request, reply) => {
-    const { name } = request.body
-    return reply.code(200).send({ method: 'POST', response: `Creation of a new family named ${name}` })
-  })
+  fastify.route<{ Body: { name: string } }>({
+		method: 'POST',
+		url: '/',
+		schema: createFamilySchema,
+		handler: async (request, reply) => {
+			const { name } = request.body
+			reply
+				.code(200)
+				.send({ 
+					method: 'POST', 
+					response: `Creation of a new family named ${name}`,
+				})
+		}
+	})
 
 	/**
 	 * DELETE /api/family/{id}
@@ -46,8 +66,17 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
 	 * @return {ApiError} 400 - Bad request response - application/json
 	 * @return {ApiError} 404 - Family not found - application/json
 	 */
-  fastify.delete<{ Params: { id: number } }>('/:id(\\d+)', async (request, reply) => {
-    const { id } = request.params
-    return reply.code(200).send({ method: 'DELETE', response: `Delete the family number ${id}` })
-  })
+  fastify.route<{ Params: { id: number } }>({
+		method: 'DELETE',
+		url: '/:id(\\d+)',
+		handler:  async (request, reply) => {
+			const { id } = request.params
+			reply
+				.code(200)
+				.send({ 
+					method: 'DELETE', 
+					response: `Delete the family number ${id}`,
+				})
+		}
+	})
 }
