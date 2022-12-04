@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyPluginOptions } from 'fastify'
+import { FastifyInstance } from 'fastify'
 import fastifyPlugin from "fastify-plugin";
 
 import { Pool } from 'pg'
@@ -8,14 +8,14 @@ const config = {
 }
 const client = new Pool(config);
 
-export default fastifyPlugin(
-  async (fastify: FastifyInstance, options: FastifyPluginOptions) => { 
-    try { 
-        await client.connect() 
-        fastify.log.info("db connected succesfully") 
-        fastify.decorate('db', {client}) 
-    } catch(error) { 
-        fastify.log.error(error) 
-    } 
-  }
-)
+// const client = {
+// 	originalClient: pool,
+// 
+// 	async query(...params) {
+// 		debug('SQL request : ', ...params);
+// 
+// 		return this.originalClient.query(...params);
+// 	},
+// };
+
+export default client;

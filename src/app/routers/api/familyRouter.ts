@@ -1,7 +1,8 @@
 import { FastifyInstance, FastifyPluginOptions } from 'fastify'
 
-import { createSchema as createFamilySchema } from '../../schemas/familySchema'
-import { createSchema as createCharacterSchema } from '../../schemas/characterSchema'
+import { createSchema } from '../../schemas/familySchema'
+
+import controller from '../../controllers/familyController'
 
 export default async (fastify: FastifyInstance, options: FastifyPluginOptions) => {
   /**
@@ -11,18 +12,10 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
 	 * @param {boolean} withcharacters.query - get all characters in each family
    * @return {array<Family>} 200 - success response - application/json
    */
-  fastify.route<{ Querystring: { withcharacters?: true } }>({
+  fastify.route({
 		method: 'GET',
 		url: '/',
-		handler: async (request, reply) => {
-			const { withcharacters } = request.query
-			reply
-				.code(200)
-				.send({ 
-					method: 'GET', 
-					response: `All families ${withcharacters ? 'with' : 'without'} their characters`,
-				})
-  	}
+		handler: controller.getAll
 	})
 
   /**
@@ -42,19 +35,35 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
 	 *   "name": "Schtroumpfs"
 	 * }
 	 */
-  fastify.route<{ Body: { name: string } }>({
+  fastify.route({
 		method: 'POST',
 		url: '/',
-		schema: createFamilySchema,
-		handler: async (request, reply) => {
-			const { name } = request.body
-			reply
-				.code(200)
-				.send({ 
-					method: 'POST', 
-					response: `Creation of a new family named ${name}`,
-				})
-		}
+		schema: createSchema,
+		handler: controller.create
+	})
+
+	/**
+	 * PATCH /api/family/{id}
+	 * @summary Update a family
+	 * @tags Family
+	 * @param {InputFamily} request.body.required - family info
+	 * @return {Family} 200 - success response - application/json
+	 * @return {ApiError} 400 - Bad request response - application/json
+	 * @return {ApiError} 404 - Family not found - application/json
+	 * @example request - example payload
+	 * {
+	 *   "name": "Minions"
+	 * }
+	 * @example request - other payload example
+	 * {
+	 *   "name": "Schtroumpfs"
+	 * }
+	 */
+  fastify.route({
+		method: 'PATCH',
+		url: '/:id(\\d+)',
+		schema: createSchema,
+		handler: controller.update
 	})
 
 	/**
@@ -69,14 +78,6 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
   fastify.route<{ Params: { id: number } }>({
 		method: 'DELETE',
 		url: '/:id(\\d+)',
-		handler:  async (request, reply) => {
-			const { id } = request.params
-			reply
-				.code(200)
-				.send({ 
-					method: 'DELETE', 
-					response: `Delete the family number ${id}`,
-				})
-		}
+		handler: controller.delete
 	})
 }

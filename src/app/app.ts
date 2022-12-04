@@ -8,7 +8,7 @@ import dbClient from './database'
 import router from './routers';
 
 export default async (fastify: FastifyInstance, options: FastifyPluginOptions) => {
-  fastify.register(dbClient)
+  // fastify.register(dbClient)
 
   // fastify.register(Static, {
   //   root: path.join(__dirname, process.env.UPLOADS_PATH || ''),
