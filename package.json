@@ -18,6 +18,7 @@
 		"@fastify/static": "^6.5.1",
 		"@types/debug": "^4.1.7",
 		"@types/dotenv": "^8.2.0",
+		"@types/pg": "^8.6.5",
 		"fastify": "^4.10.2",
 		"pg": "^8.8.0"
 	},
