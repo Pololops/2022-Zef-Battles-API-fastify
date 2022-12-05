@@ -31,6 +31,13 @@ export default {
 			throw new Error('This capacity does not exists', /* { statusCode: 404 } */);
 		}
 
+		if (request.body.name) {
+			const existingCapacity = await capacityDatamapper.isUnique(request.body.name);
+			if (existingCapacity) {
+				throw new Error('Other capacity already exists with this name', /* { statusCode: 400 }, */);
+			}
+		}
+
 		const savedCapacity = await capacityDatamapper.update(id, request.body);
 
 		fastify.log.info('update : ', savedCapacity);

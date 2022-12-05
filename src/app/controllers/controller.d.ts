@@ -19,7 +19,7 @@ export type PostFamily = FastifyRequest<{
 
 export type PatchFamily = FastifyRequest<{
   Params: { id: string },
-  Body: { name: string }
+  Body: { id: number, name: string }
 }>
 
 export type PostCharacter = FastifyRequest<{

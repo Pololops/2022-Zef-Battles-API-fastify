@@ -73,7 +73,7 @@ export default {
 			throw new Error('This character does not exists', /* { statusCode: 404 } */);
 		}
 
-		if (request.body.name || id) {
+		if (request.body.name) {
 			const existingCharacter = await characterDatamapper.isUnique(request.body);
 			if (existingCharacter) {
 				throw new Error('Other character already exists with this name', /* { statusCode: 400 } */);

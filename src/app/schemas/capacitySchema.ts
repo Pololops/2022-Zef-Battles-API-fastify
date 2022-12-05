@@ -26,6 +26,10 @@ export const updateSchema = {
   body: {
     type: 'object',
     properties: {
+      id: {
+        type: 'integer',
+        minimum: 1
+      },
       name: {
         type: 'string',
         minLength: 1
@@ -58,7 +62,7 @@ export const associateCapacityToCharacterSchema = {
         type: 'string',
       },
       level: {
-        type: 'number', 
+        type: 'integer', 
         minimum: 0, 
         maximum: 100
       }

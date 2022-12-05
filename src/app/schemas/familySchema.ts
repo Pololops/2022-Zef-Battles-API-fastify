@@ -2,7 +2,7 @@ export const readSchema = {
   querystring: {
     type: 'object',
     properties: {
-      withcharacters: { const: true }
+      withcharacters: { type: 'boolean' }
     }
   } as const
 }
@@ -34,7 +34,7 @@ export const updateSchema = {
     type: 'object',
     properties: {
       id: {
-        type: 'number',
+        type: 'integer',
         minimum: 1
       },
       name: {
@@ -42,7 +42,7 @@ export const updateSchema = {
         minLength: 1
       }
     },
-    required: ['id', 'name'],
+    required: ['name'],
   } as const
 }
 

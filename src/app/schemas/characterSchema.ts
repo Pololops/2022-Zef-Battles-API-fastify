@@ -7,7 +7,7 @@ export const createSchema = {
         minLength: 1
       },
       family_id: {
-        type: 'number',
+        type: 'integer',
         minimum: 1
       },
       file: {
@@ -23,7 +23,7 @@ export const updateSchema = {
     type: 'object',
     properties: {
       id: {
-        type: 'number',
+        type: 'integer',
         minimum: 1
       },
       name: {
@@ -31,13 +31,13 @@ export const updateSchema = {
         minLength: 1
       },
       family_id: {
-        type: 'number',
+        type: 'integer',
         minimum: 1
       },
       file: {
         type: 'object',
       }
     },
-    required: ['id', 'name', 'file', 'family_id'],
+    required: ['name', 'file', 'family_id'],
   } as const
 }
