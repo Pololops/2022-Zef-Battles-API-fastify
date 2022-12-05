@@ -2,14 +2,12 @@ import fastify from 'fastify'
 
 import Cors from '@fastify/cors'
 
-import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts'
 import path from 'path'
 import Static from '@fastify/static'
 
 import router from './routers'
 
-export const app = fastify({ logger: true }).withTypeProvider<JsonSchemaToTsProvider>()
-
+export const app = fastify({ logger: true })
 // fastify.register(Static, {
 //   root: path.join(__dirname, process.env.UPLOADS_PATH || ''),
 //   prefix: '/'

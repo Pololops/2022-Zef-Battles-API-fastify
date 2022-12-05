@@ -1,6 +1,4 @@
-import { FastifyPluginOptions } from 'fastify';
-
-export const createSchema: FastifyPluginOptions = {
+export const createSchema = {
   body: {
     type: 'object',
     properties: {
@@ -20,7 +18,7 @@ export const createSchema: FastifyPluginOptions = {
   } as const
 }
 
-export const updateSchema: FastifyPluginOptions = {
+export const updateSchema = {
   body: {
     type: 'object',
     properties: {

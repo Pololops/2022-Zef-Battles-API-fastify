@@ -1,6 +1,3 @@
-import { FastifyPluginOptions } from 'fastify';
-import { FromSchema } from "json-schema-to-ts";
-
 export const readSchema = {
   querystring: {
     type: 'object',
