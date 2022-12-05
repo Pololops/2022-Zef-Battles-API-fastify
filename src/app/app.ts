@@ -1,29 +1,28 @@
-import { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import fastify from 'fastify'
 
-import path from 'path'
 import Cors from '@fastify/cors'
+
+import { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts'
+import path from 'path'
 import Static from '@fastify/static'
-import dbClient from './database'
 
-import router from './routers';
+import router from './routers'
 
-export default async (fastify: FastifyInstance, options: FastifyPluginOptions) => {
-  // fastify.register(dbClient)
+export const app = fastify({ logger: true }).withTypeProvider<JsonSchemaToTsProvider>()
 
-  // fastify.register(Static, {
-  //   root: path.join(__dirname, process.env.UPLOADS_PATH || ''),
-  //   prefix: '/'
-  // })
+// fastify.register(Static, {
+//   root: path.join(__dirname, process.env.UPLOADS_PATH || ''),
+//   prefix: '/'
+// })
 
-  const corsOptions = {
-    origin: process.env.CORS_DOMAINS,
-  }
-  fastify.register(Cors, { 
-    hook: 'preHandler',
-    delegator: (request, callback) => {
-      callback(null, corsOptions)
-    },
-  })
-
-  fastify.register(router)
+const corsOptions = {
+  origin: process.env.CORS_DOMAINS,
 }
+app.register(Cors, { 
+  hook: 'preHandler',
+  delegator: (request, callback) => {
+    callback(null, corsOptions)
+  },
+})
+
+app.register(router)

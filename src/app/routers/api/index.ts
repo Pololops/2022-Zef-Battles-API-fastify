@@ -7,17 +7,17 @@ import capacityRouter from './capacityRouter';
 import capacityInCharacterRouter from './capacityInCharacterRouter';
 // import battleRouter from './battleRouter';
 
-export default async (fastify: FastifyInstance, options: FastifyPluginOptions) => {
-  fastify.get('/', async (request, reply) => {
+export default async (router: FastifyInstance, options: FastifyPluginOptions) => {
+  router.get('/', async (request, reply) => {
     reply.code(200).send({ greet: 'hello' })
   })
 
 
-  fastify.register(familyRouter, { prefix: '/family' });
-  fastify.register(characterInFamilyRouter, { prefix: '/family/:id(\\d+)/character' });
-  fastify.register(characterRouter, { prefix: '/character' });
-  fastify.register(capacityInCharacterRouter, { prefix: '/character/:id(\\d+)/capacity' });
-  fastify.register(capacityRouter, { prefix: '/capacity' });
+  router.register(familyRouter, { prefix: '/family' });
+  router.register(characterInFamilyRouter, { prefix: '/family/:id(\\d+)/character' });
+  router.register(characterRouter, { prefix: '/character' });
+  router.register(capacityInCharacterRouter, { prefix: '/character/:id(\\d+)/capacity' });
+  router.register(capacityRouter, { prefix: '/capacity' });
 
-  //  fastify.register((api, opts, done) => battleRouter, { prefix: '/battle' });
+  //  router.register((api, opts, done) => battleRouter, { prefix: '/battle' });
 }
