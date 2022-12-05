@@ -75,7 +75,7 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
 	 * @return {ApiError} 400 - Bad request response - application/json
 	 * @return {ApiError} 404 - Family not found - application/json
 	 */
-  fastify.route<{ Params: { id: number } }>({
+  fastify.route({
 		method: 'DELETE',
 		url: '/:id(\\d+)',
 		handler: controller.delete
