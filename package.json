@@ -13,7 +13,6 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"@fastify/type-provider-json-schema-to-ts": "^2.1.1",
 		"dotenv": "^16.0.3",
 		"fastify": "^4.10.2",
 		"fastify-file-upload": "^4.0.0",
