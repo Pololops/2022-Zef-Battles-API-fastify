@@ -1,6 +1,8 @@
 import { FastifyInstance, FastifyPluginOptions } from 'fastify'
 
-import { createSchema as createCharacterSchema } from '../../schemas/characterSchema'
+import { updateSchema } from '../../schemas/characterSchema'
+
+import controller from '../../controllers/characterController'
 
 export default async (fastify: FastifyInstance, options: FastifyPluginOptions) => {
   /**
@@ -11,18 +13,39 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
 	 * @return {array<Character>} 200 - success response - application/json
 	 * @return {ApiError} 404 - character not found - application/json
    */
-  fastify.route<{ Params: { id: number } }>({
+  fastify.route({
     method: 'GET',
     url: '/:id(\\d+)',
-    handler: async (request, reply) => {
-      const { id } = request.params
-      reply
-        .code(200)
-        .send({ 
-          method: 'GET', 
-          response: `The characters number ${id}`,
-        })
-    }
+    handler: controller.getOneByPk
+  })
+
+  /**
+	 * PATCH /api/character/{id}
+	 * @summary Update one character
+	 * @tags Character
+	 * @param {number} id.path.required - character identifier
+	 * @param {InputCharacter} request.body.required - character info
+	 * @return {Character} 200 - success response - application/json
+	 * @return {ApiError} 400 - Bad request response - application/json
+	 * @return {ApiError} 404 - character not found - application/json
+	 * @example request - example payload
+	 * {
+	 *		"name": "Schtroumpf Grognon",
+	 * 		"picture": "/",
+	 * 		"family_id": 2
+	 * }
+	 * @example request - other payload example
+	 * {
+	 *		"name": "Pikachu",
+	 * 		"picture": "/",
+	 * 		"family_id": 1
+	 * }
+	 */
+  fastify.route({
+    method: 'PATCH',
+    url: '/:id(\\d+)',
+    schema: updateSchema,
+    handler: controller.update
   })
 
   /**
@@ -34,17 +57,9 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
 	 * @return {ApiError} 400 - Bad request response - application/json
 	 * @return {ApiError} 404 - character not found - application/json
 	 */
-  fastify.route<{ Params: { id: number } }>({
+  fastify.route({
     method: 'DELETE',
     url: '/:id(\\d+)',
-    handler: async (request, reply) => {
-      const { id } = request.params
-      reply
-        .code(200)
-        .send({ 
-          method: 'DELETE', 
-          response: `Delete the character number ${id}`,
-        })
-    }
+    handler: controller.delete
   })
 }

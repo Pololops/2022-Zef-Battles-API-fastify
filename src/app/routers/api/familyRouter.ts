@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyPluginOptions } from 'fastify'
 
-import { createSchema } from '../../schemas/familySchema'
+import { createSchema, updateSchema } from '../../schemas/familySchema'
 
 import controller from '../../controllers/familyController'
 
@@ -62,7 +62,7 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
   fastify.route({
 		method: 'PATCH',
 		url: '/:id(\\d+)',
-		schema: createSchema,
+		schema: updateSchema,
 		handler: controller.update
 	})
 

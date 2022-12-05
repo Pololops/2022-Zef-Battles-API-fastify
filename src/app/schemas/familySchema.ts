@@ -14,3 +14,22 @@ export const createSchema: FastifyPluginOptions = {
     },
   },
 }
+
+export const updateSchema: FastifyPluginOptions = {
+  schema: {
+    body: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'number',
+          minimum: 1
+        },
+        name: {
+          type: 'string',
+          minLength: 1
+        }
+      },
+      required: ['id', 'name'],
+    },
+  },
+}

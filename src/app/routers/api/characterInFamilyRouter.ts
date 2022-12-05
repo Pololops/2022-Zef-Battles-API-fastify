@@ -1,6 +1,8 @@
 import { FastifyInstance, FastifyPluginOptions } from 'fastify'
 
-import { createSchema as createCharacterSchema } from '../../schemas/characterSchema'
+import controller from '../../controllers/characterController'
+
+import { createSchema } from '../../schemas/characterSchema'
 
 export default async (fastify: FastifyInstance, options: FastifyPluginOptions) => {
     /**
@@ -11,18 +13,10 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
 	 * @return {array<Character>} 200 - success response - application/json
 	 * @return {ApiError} 404 - character not found - application/json
    */
-  fastify.route<{ Params: { id: number } }>({
+  fastify.route({
 		method: 'GET',
     url: '/',
-    handler: async (request, reply) => {
-			const { id } = request.params
-      reply
-				.code(200)
-				.send({ 
-					method: 'GET', 
-					response: `All characters of the family number ${id}`,
-				})
-    }
+    handler: controller.getAllInFamily
 	})
 
   /**
@@ -47,19 +41,10 @@ export default async (fastify: FastifyInstance, options: FastifyPluginOptions) =
 	 * 		"family_id": 1
 	 * }
 	 */
-  fastify.route<{ Params: { id: number }, Body: { name: string, file: string, family_id: number } }>({
+  fastify.route({
 		method: 'POST',
 		url: '/',
-		schema: createCharacterSchema,
-		handler: async (request, reply) => {
-			const { id } = request.params
-			const character = request.body
-			reply
-				.code(200)
-				.send({ 
-					method: 'POST', 
-					response: `Creation of a new character named ${character.name} in the family number ${id}`,
-				})
-  	}
+		schema: createSchema,
+		handler: controller.createInFamily
 	})
 }

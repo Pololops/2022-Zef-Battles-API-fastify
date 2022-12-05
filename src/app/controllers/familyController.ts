@@ -11,11 +11,11 @@ type PostRequest = FastifyRequest<{
 }>
 
 type DeleteRequest = FastifyRequest<{
-  Params: { id: number },
+  Params: { id: string },
 }>
 
 type PatchRequest = FastifyRequest<{
-  Params: { id: number },
+  Params: { id: string },
   Body: { name: string }
 }>
 
@@ -48,7 +48,7 @@ export default {
   },
 
   update: async (request: PatchRequest, reply: FastifyReply) => {
-		const id = Number(request.params.id);
+		const id = parseInt(request.params.id);
 
 		const family = await familyDatamapper.findByPk(id);
 		if (!family) {
@@ -69,7 +69,7 @@ export default {
 	},
   
   delete: async (request: DeleteRequest, reply: FastifyReply) => {
-    const id = Number(request.params.id)
+    const id = parseInt(request.params.id)
 
 		const deletedFamily = await familyDatamapper.delete(id);
 
