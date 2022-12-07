@@ -14,15 +14,15 @@ const corsOptions = {
 }
 
 app
-	.register(fastifyStatic, {
-		root: path.join(__dirname, '../../' + process.env.UPLOADS_PATH),
-		index: false,
-		prefix: '/img/'
-	})
-
 	.register(fastifyCors, {
 		hook: 'preHandler',
 		delegator: (request, callback) => callback(null, corsOptions),
+	})
+
+	.register(fastifyStatic, {
+		root: path.join(__dirname, '../../' + process.env.UPLOADS_PATH),
+		index: false,
+		prefix: '/'
 	})
 
 	.register(fastifyMultipart, {
