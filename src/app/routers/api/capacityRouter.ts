@@ -9,7 +9,6 @@ export default async (router: FastifyInstance) => {
   router
     .get(
       '/',
-      {},
       controller.getAll(router)
     )
 
@@ -27,7 +26,6 @@ export default async (router: FastifyInstance) => {
 
     .delete(
       '/:id(\\d+)',
-      {},
       controller.delete(router)
     )
 }

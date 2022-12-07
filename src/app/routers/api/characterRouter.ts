@@ -8,7 +8,6 @@ export default async (router: FastifyInstance) => {
   router
     .get(
       '/:id(\\d+)', 
-      {}, 
       controller.getOneByPk(router)
     )
 
@@ -20,7 +19,6 @@ export default async (router: FastifyInstance) => {
 
     .delete(
       '/:id(\\d+)', 
-      {}, 
       controller.delete(router)
     )
 }

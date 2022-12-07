@@ -24,14 +24,22 @@ export type PatchFamily = FastifyRequest<{
 
 export type PostCharacter = FastifyRequest<{
   Params: { id: string },
-  Body: { name: string, family_id: number, file: {} }
-  File: { file: string }
+  Body: { name: string, file: {
+    data: BufferEncoding,
+    filename: string,
+    mimetype: string,
+    limit: boolean
+  }[] }
 }>
 
-export type PostCharacter = FastifyRequest<{
+export type PatchCharacter = FastifyRequest<{
   Params: { id: string },
-  Body: { name: string, family_id: number, file: {} }
-  File: { file: string }
+  Body: { name: string, family_id: number, file: {
+    data: BufferEncoding,
+    filename: string,
+    mimetype: string,
+    limit: boolean
+  }[] }
 }>
 
 export type PostCapacity = FastifyRequest<{

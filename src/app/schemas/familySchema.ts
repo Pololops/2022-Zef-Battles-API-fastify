@@ -34,7 +34,7 @@ export const updateSchema = {
     type: 'object',
     properties: {
       id: {
-        type: 'integer',
+        type: 'number',
         minimum: 1
       },
       name: {

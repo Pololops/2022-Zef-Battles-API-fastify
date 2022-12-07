@@ -1,7 +1,7 @@
-import { FastifyInstance, FastifyPluginOptions } from 'fastify'
+import { FastifyInstance, FastifyServerOptions } from 'fastify'
 
 import apiRouter from './api';
-export default async (router: FastifyInstance, options: FastifyPluginOptions) => {
+export default async (router: FastifyInstance, options: FastifyServerOptions) => {
   router.get('/', async (request, reply) => {
     reply
       .code(200)

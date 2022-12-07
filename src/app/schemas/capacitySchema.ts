@@ -18,7 +18,7 @@ export const updateSchema = {
   params: { type: 'object',
     properties: {
       id: {
-        type: 'string',
+        type: 'number',
         minimum: 1
       },
     }
@@ -27,7 +27,7 @@ export const updateSchema = {
     type: 'object',
     properties: {
       id: {
-        type: 'integer',
+        type: 'number',
         minimum: 1
       },
       name: {
@@ -46,7 +46,7 @@ export const associateCapacityToCharacterSchema = {
   params: { type: 'object',
     properties: {
       id: {
-        type: 'string',
+        type: 'number',
         minimum: 1
       },
     }

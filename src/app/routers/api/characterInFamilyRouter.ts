@@ -4,17 +4,15 @@ import controller from '../../controllers/characterController'
 
 import { createSchema } from '../../schemas/characterSchema'
 
-export default async (router: FastifyInstance) => {
-  router
+export default async (router: FastifyInstance) => {	
+	router
 		.get(
 			'/',
-			{},
 			controller.getAllInFamily(router)
 		)
 
 		.post(
 			'/',
-			{ schema: createSchema },
 			controller.createInFamily(router)
 		)
 }

@@ -1,4 +1,5 @@
 export const createSchema = {
+  consumes: ["multipart/form-data"],
   body: {
     type: 'object',
     properties: {
@@ -6,24 +7,21 @@ export const createSchema = {
         type: 'string',
         minLength: 1
       },
-      family_id: {
-        type: 'integer',
-        minimum: 1
-      },
       file: {
         type: 'object',
       }
     },
-    required: ['name', 'file', 'family_id'],
+    required: ['name', 'file'],
   } as const
 }
 
 export const updateSchema = {
+  consumes: ["multipart/form-data"],
   body: {
     type: 'object',
     properties: {
       id: {
-        type: 'integer',
+        type: 'number',
         minimum: 1
       },
       name: {
@@ -31,13 +29,13 @@ export const updateSchema = {
         minLength: 1
       },
       family_id: {
-        type: 'integer',
+        type: 'number',
         minimum: 1
       },
       file: {
         type: 'object',
       }
     },
-    required: ['name', 'file', 'family_id'],
+    required: ['id', 'name', 'family_id', 'file'],
   } as const
 }
