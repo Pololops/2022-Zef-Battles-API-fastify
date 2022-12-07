@@ -28,7 +28,7 @@ export default {
 		const paramsFamilyId = Number(request.params.id)
 		const { name, file } = request.body
 
-		if (!file || file.length === 0) {
+		if (!file || file.length === 0) {
 			throw new Error('You have to upload an image file.', /* { statusCode: 400 } */)
 		}
 		

@@ -1,5 +1,12 @@
 import { FastifyRequest } from 'fastify'
 
+export type MultipartFormFiles = {
+  data: BufferEncoding,
+  filename: string,
+  mimetype: string,
+  limit: boolean
+}
+
 export type GetByPk = FastifyRequest<{
   Params: { id: string }
 }>
@@ -24,22 +31,12 @@ export type PatchFamily = FastifyRequest<{
 
 export type PostCharacter = FastifyRequest<{
   Params: { id: string },
-  Body: { name: string, file: {
-    data: BufferEncoding,
-    filename: string,
-    mimetype: string,
-    limit: boolean
-  }[] }
+  Body: { name: string, file: MultipartFormFiles[] }
 }>
 
 export type PatchCharacter = FastifyRequest<{
   Params: { id: string },
-  Body: { name: string, family_id: number, file: {
-    data: BufferEncoding,
-    filename: string,
-    mimetype: string,
-    limit: boolean
-  }[] }
+  Body: { name: string, family_id: number, file: MultipartFormFiles[] }
 }>
 
 export type PostCapacity = FastifyRequest<{

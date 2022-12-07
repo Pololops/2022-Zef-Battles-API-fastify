@@ -1,9 +1,10 @@
 import Fastify from'fastify'
 import { writeFile, access, unlink } from 'fs';
+import { MultipartFormFiles } from '../controllers/controller';
 
 const fastify = Fastify({ logger: true })
 
-export const checkFile = (file: { data?: BufferEncoding; filename: string; mimetype: string; limit: boolean; }) => {
+export const checkFile = (file: MultipartFormFiles) => {
 		if (file.limit) {
 			throw new Error('This image file is too large. 2MB max.', /* { statusCode: 415 } */)
 		}
