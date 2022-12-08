@@ -31,8 +31,8 @@ export default {
 			throw new Error('This capacity does not exists', /* { statusCode: 404 } */);
 		}
 
-		if (request.body.name) {
-			const existingCapacity = await capacityDatamapper.isUnique(request.body.name);
+		if (request.body.name, id) {
+			const existingCapacity = await capacityDatamapper.isUnique(request.body.name, id);
 			if (existingCapacity) {
 				throw new Error('Other capacity already exists with this name', /* { statusCode: 400 }, */);
 			}
