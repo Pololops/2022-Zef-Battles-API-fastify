@@ -137,7 +137,7 @@ export default {
 
 		const character = await characterDatamapper.findByPk(characterId);
 		fastify.log.info('getOneByPk : ', character);
-		return reply.code(200).send(character);
+		reply.code(200).send(character);
 	},
 
 	removeCapacityToCharacter: (fastify: FastifyInstance) => async (request: DissociateCapacityFromCharacter, reply: FastifyReply) => {
@@ -155,6 +155,6 @@ export default {
 		}
 
 		fastify.log.info('removeCapacityToCharacter : ', deletedCharacterHasCapacity);
-		return reply.code(204);
+		reply.code(204)
 	}
 }
