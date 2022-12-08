@@ -1,9 +1,10 @@
 import type { FastifyInstance, FastifyReply } from 'fastify'
-import type { DeleteByPk, GetByPk, PatchCharacter, PostCharacter } from './controller'
+import type { AssociateCapacityToCharacter, DeleteByPk, DissociateCapacityFromCharacter, GetByPk, PatchCharacter, PostCharacter } from './controller'
 
 import { saveFile, deleteFile, checkFile } from '../services/fileUploadManager'
 
 import characterDatamapper from '../models/character'
+import capacityDatamapper from '../models/capacity'
 
 export default {
 	getAllInFamily: (fastify: FastifyInstance) => async (request: GetByPk, reply: FastifyReply) => {
@@ -95,5 +96,65 @@ export default {
 
 		fastify.log.info('delete : ', !!deletedCharacter)
 		reply.code(204)
+	},
+
+	addCapacityToCharacter: (fastify: FastifyInstance) => async (request: AssociateCapacityToCharacter, reply: FastifyReply) => {
+		const characterId = parseInt(request.params.id);
+		const { name, description, level } = request.body;
+
+		const foundCharacter = await characterDatamapper.findByPk(characterId);
+		if (!foundCharacter) {
+			throw new Error('This character does not exists', /* { statusCode: 404 } */ );
+		}
+
+		let foundCapacity = await capacityDatamapper.findByName(name);
+
+		if (foundCapacity) {
+			const hasAlreadyThisCapacity = await characterDatamapper.hasCapacity(
+				characterId,
+				foundCapacity.id,
+			);
+
+			if (hasAlreadyThisCapacity) {
+				throw new Error('This character already has this capacity', /* { statusCode: 400 } */);
+			}
+		} else {
+			if (!name) {
+				throw new Error('"capacity name" is required', /* { statusCode: 400 } */);
+			}
+
+			foundCapacity = await capacityDatamapper.insert({
+				name,
+				description,
+			});
+		}
+
+		await characterDatamapper.addCapacityToCharacter(
+			characterId,
+			foundCapacity.id,
+			level ?? 0,
+		);
+
+		const character = await characterDatamapper.findByPk(characterId);
+		fastify.log.info('getOneByPk : ', character);
+		return reply.code(200).send(character);
+	},
+
+	removeCapacityToCharacter: (fastify: FastifyInstance) => async (request: DissociateCapacityFromCharacter, reply: FastifyReply) => {
+		const characterId = parseInt(request.params.id);
+		const capacityId = parseInt(request.params.capacityId);
+
+		const deletedCharacterHasCapacity =
+			await characterDatamapper.removeCapacityToCharacter(
+				characterId,
+				capacityId,
+			);
+
+		if (!deletedCharacterHasCapacity) {
+			throw new Error('This character does not exists', /* { statusCode: 404 } */ );
+		}
+
+		fastify.log.info('removeCapacityToCharacter : ', deletedCharacterHasCapacity);
+		return reply.code(204);
 	}
 }

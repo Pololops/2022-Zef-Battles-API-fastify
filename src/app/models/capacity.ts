@@ -23,15 +23,15 @@ export default {
 		return result.rows[0]
 	},
 
-	// async findByName(name: string) {
-	// 	const result = await client.query(
-	// 		`SELECT * FROM "capacity" WHERE "name" = $1;`,
-	// 		[name],
-	// 	)
-// 
-	// 	fastify.log.info('findByName : ', result.rows)
-	// 	return result.rows[0]
-	// },
+	async findByName(name: string) {
+		const result = await client.query(
+			`SELECT * FROM "capacity" WHERE "name" = $1;`,
+			[name],
+		)
+
+		fastify.log.info('findByName : ', result.rows)
+		return result.rows[0]
+	},
 
 	async isUnique(name: string) {
 		const result = await client.query(`SELECT * FROM "capacity" WHERE "name" = $1;`, [ name ])

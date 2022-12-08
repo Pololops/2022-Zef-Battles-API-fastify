@@ -62,12 +62,12 @@ export const associateCapacityToCharacterSchema = {
         type: 'string',
       },
       level: {
-        type: 'integer', 
+        type: 'number', 
         minimum: 0, 
         maximum: 100
       }
     },
-    required: ['name'],
+    required: ['name', 'level'],
   } as const
 }
 

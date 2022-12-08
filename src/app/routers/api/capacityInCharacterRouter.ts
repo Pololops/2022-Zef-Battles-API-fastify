@@ -1,35 +1,21 @@
 import type { FastifyInstance } from 'fastify'
 
-import { associateCapacityToCharacterSchema, dissociateCapacityToCharacterSchema } from '../../schemas/capacitySchema'
+import { associateCapacityToCharacterSchema, dissociateCapacityToCharacterSchema } from '../../schemas/capacitySchema';
+
+import controller from '../../controllers/characterController'
 
 export default async (router: FastifyInstance) => {
   router
-		.post<{ Params: { id: number } }>(
+		.post(
 			'/',
 			{ schema: associateCapacityToCharacterSchema },
-			async (request, reply) => {
-				const { id } = request.params
-				reply
-					.code(200)
-					.send({ 
-						method: 'POST', 
-						response: `A new capacity created and associate to the character number ${id}`,
-					})
-    	}
+      controller.addCapacityToCharacter(router)
 		)
 
-		.post<{ Params: { id: number, capacityId: number } }>(
+		.delete(
 			'/:capacityId(\\d+)',
 			{ schema: dissociateCapacityToCharacterSchema },
-			async (request, reply) => {
-				const { id, capacityId } = request.params
-				reply
-					.code(200)
-					.send({ 
-						method: 'POST', 
-						response: `Dissociate the capacity number ${capacityId} to the character number ${id}`,
-					})
-			}
+			controller.removeCapacityToCharacter(router)
 		)
 }
 
