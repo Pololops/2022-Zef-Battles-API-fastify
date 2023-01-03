@@ -2,6 +2,7 @@ import type { FastifyInstance, FastifyRequest, FastifyReply,} from 'fastify'
 import type { DeleteByPk, PatchCapacity, PostCapacity } from './controller'
 
 import capacityDatamapper from '../models/capacity'
+import ApiError from "../errors/apiError";
 
 export default {
   getAll: (fastify: FastifyInstance) => async (request: FastifyRequest, reply: FastifyReply) => {
@@ -14,7 +15,8 @@ export default {
   create: (fastify: FastifyInstance) => async (request: PostCapacity, reply: FastifyReply) => {
     const capacity = await capacityDatamapper.isUnique(request.body.name);
 		if (capacity) {
-			throw new Error('This capacity name already exists', /* { statusCode: 400 } */);
+			const errorMessage = 'This capacity name already exists';
+			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 400 } );
 		}
 
 		const savedCapacity = await capacityDatamapper.insert(request.body);
@@ -28,13 +30,15 @@ export default {
 
 		const capacity = await capacityDatamapper.findByPk(id);
 		if (!capacity) {
-			throw new Error('This capacity does not exists', /* { statusCode: 404 } */);
+			const errorMessage = 'This capacity does not exists';
+			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 404 } );
 		}
 
 		if (request.body.name, id) {
 			const existingCapacity = await capacityDatamapper.isUnique(request.body.name, id);
 			if (existingCapacity) {
-				throw new Error('Other capacity already exists with this name', /* { statusCode: 400 }, */);
+			const errorMessage = 'Other capacity already exists with this name';
+			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 400 } );
 			}
 		}
 
@@ -50,7 +54,8 @@ export default {
 		const deletedCapacity = await capacityDatamapper.delete(id);
 
 		if (!deletedCapacity) {
-			throw new Error('This capacity does not exists', /* { statusCode: 404 } */)
+			const errorMessage = 'This capacity does not exists';
+			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 404 } );
 		}
 
 		fastify.log.info('delete : ', deletedCapacity);

@@ -3,8 +3,11 @@ import type { AssociateCapacityToCharacter, DeleteByPk, DissociateCapacityFromCh
 
 import { saveFile, deleteFile, checkFile } from '../services/fileUploadManager'
 
+import familyDatamapper from '../models/family'
 import characterDatamapper from '../models/character'
 import capacityDatamapper from '../models/capacity'
+import ApiError from "../errors/apiError";
+
 
 export default {
 	getAllInFamily: (fastify: FastifyInstance) => async (request: GetByPk, reply: FastifyReply) => {
@@ -21,6 +24,11 @@ export default {
 
 		const character = await characterDatamapper.findByPk(characterId)
 
+		if (!character) {
+			const errorMessage = 'This character does not exist';
+			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 404 } );
+		}
+
 		fastify.log.info('read : ', character)
 		reply.code(200).send(character)
 	},
@@ -29,14 +37,21 @@ export default {
 		const paramsFamilyId = Number(request.params.id)
 		const { name, file } = request.body
 
+		const family = await familyDatamapper.findByPk(paramsFamilyId);
+		if (!family) {
+			const errorMessage = 'This family does not exist';
+			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 404 } );
+		}	
+
 		if (!file || file.length === 0) {
-			throw new Error('You have to upload an image file.', /* { statusCode: 400 } */)
+			const errorMessage = 'You have to upload an image file';
+			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 400 } );
 		}
 		
-
 		const character = await characterDatamapper.isUnique({ name })
 		if (character) {
-			throw new Error('This character already exists', /* { statusCode: 400 } */)
+			const errorMessage = 'This character already exists';
+			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 400 } );
 		}	
 		
 		checkFile(file[0])
@@ -69,13 +84,15 @@ export default {
 
 		const character = await characterDatamapper.findByPk(id)
 		if (!character) {
-			throw new Error('This character does not exists', /* { statusCode: 404 } */)
+			const errorMessage = 'This character does not exists';
+			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 400 } );
 		}
 
 		if (request.body.name) {
 			const existingCharacter = await characterDatamapper.isUnique(request.body)
 			if (existingCharacter) {
-				throw new Error('Other character already exists with this name', /* { statusCode: 400 } */)
+				const errorMessage = 'Other character already exists with this name';
+				throw new ApiError(errorMessage, { message: errorMessage, statusCode: 400 } );
 			}
 		}
 
@@ -89,7 +106,8 @@ export default {
     const id = parseInt(request.params.id)
 		const deletedCharacter = await characterDatamapper.delete(id)
 		if (!deletedCharacter) {
-			throw new Error('This character does not exists', /* { statusCode: 404 } */)
+			const errorMessage = 'This character does not exists';
+			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 404 } );
 		}
 
 		deleteFile(deletedCharacter.picture)
@@ -104,7 +122,8 @@ export default {
 
 		const foundCharacter = await characterDatamapper.findByPk(characterId);
 		if (!foundCharacter) {
-			throw new Error('This character does not exists', /* { statusCode: 404 } */ );
+			const errorMessage = 'This character does not exists';
+			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 404 } );
 		}
 
 		let foundCapacity = await capacityDatamapper.findByName(name);
@@ -116,11 +135,13 @@ export default {
 			);
 
 			if (hasAlreadyThisCapacity) {
-				throw new Error('This character already has this capacity', /* { statusCode: 400 } */);
+				const errorMessage = 'This character already has this capacity';
+				throw new ApiError(errorMessage, { message: errorMessage, statusCode: 400 } );
 			}
 		} else {
 			if (!name) {
-				throw new Error('"capacity name" is required', /* { statusCode: 400 } */);
+				const errorMessage = '"capacity name" is required';
+				throw new ApiError(errorMessage, { message: errorMessage, statusCode: 400 } );
 			}
 
 			foundCapacity = await capacityDatamapper.insert({
@@ -151,7 +172,8 @@ export default {
 			);
 
 		if (!deletedCharacterHasCapacity) {
-			throw new Error('This character does not exists', /* { statusCode: 404 } */ );
+			const errorMessage = 'This character does not exists';
+			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 404 } );
 		}
 
 		fastify.log.info('removeCapacityToCharacter : ', deletedCharacterHasCapacity);
