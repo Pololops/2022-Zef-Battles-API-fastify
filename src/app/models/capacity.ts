@@ -33,14 +33,21 @@ export default {
 		return result.rows[0]
 	},
 
-	async isUnique(name: string) {
-		const result = await client.query(`SELECT * FROM "capacity" WHERE "name" = $1;`, [ name ])
+	async isUnique(name: string, id?: number) {
+		const values: (string | number)[] = [ name ];
+		let preparedQuery = `SELECT * FROM "capacity" WHERE "name" = $1;`
+
+		if (id) {
+			preparedQuery = preparedQuery.replace(';', ` AND "id" <> $${values.length + 1};`)
+			values.push(id);
+		}
+		const result = await client.query(preparedQuery, values);
 
 		if (result.rowCount === 0) {
-			return null
+			return null;
 		}
 
-		fastify.log.info('isUnique : ', result.rows[0])
+		fastify.log.info('isUnique : ', result.rows[0]);
 		return result.rows[0]
 	},
 

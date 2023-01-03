@@ -26,10 +26,6 @@ export const updateSchema = {
   body: {
     type: 'object',
     properties: {
-      id: {
-        type: 'number',
-        minimum: 1
-      },
       name: {
         type: 'string',
         minLength: 1
