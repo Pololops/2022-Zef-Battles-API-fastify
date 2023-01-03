@@ -18,6 +18,11 @@ export default async (router: FastifyInstance): Promise<void> => {
 			controller.create(router)
 		)
 
+		.get(
+			'/:id(\\d+)',
+			controller.getOneByPk(router)
+		)
+
 		.patch(
 			'/:id(\\d+)', 
 			{ schema: updateSchema }, 
