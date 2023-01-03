@@ -10,7 +10,7 @@ export default {
 			[familyId],
 		)
 
-		fastify.log.info('findAllInFamily : ', result.rows)
+		fastify.log.info('Datamapper findAllInFamily : ', result.rows)
 		return result.rows
 	},
 
@@ -20,7 +20,7 @@ export default {
 			[id],
 		)
 
-		fastify.log.info('findByPk : ', result.rows)
+		fastify.log.info('Datamapper findByPk : ', result.rows)
 		return result.rows[0]
 	},
 
@@ -38,7 +38,7 @@ export default {
 			return null
 		}
 
-		fastify.log.info('isUnique : ', result.rows[0])
+		fastify.log.info('Datamapper isUnique : ', result.rows[0])
 		return result.rows[0]
 	},
 
@@ -54,7 +54,7 @@ export default {
 			values,
 		)
 
-		fastify.log.info('insertInFamily : ', result.rows[0])
+		fastify.log.info('Datamapper insertInFamily : ', result.rows[0])
 		return result.rows[0]
 	},
 
@@ -71,7 +71,7 @@ export default {
 			[...values, id],
 		)
 
-		fastify.log.info('update : ', result.rows[0])
+		fastify.log.info('Datamapper update : ', result.rows[0])
 		return result.rows[0]
 	},
 
@@ -81,7 +81,7 @@ export default {
 			[id],
 		)
 
-		fastify.log.info('delete : ', !!result.rowCount, result.rows[0])
+		fastify.log.info('Datamapper delete : ', !!result.rowCount, result.rows[0])
 		return result.rows[0]
 	},
 
@@ -95,27 +95,37 @@ export default {
 			return null
 		}
 
-		fastify.log.info('hasCapacity : ', result.rows[0])
+		fastify.log.info('Datamapper hasCapacity : ', result.rows[0])
 		return result.rows[0]
 	},
 
-	async addCapacityToCharacter(characterId: number, capacityId: number, level: number) {
+	async addAssociationBetweenCapacityAndCharacter(characterId: number, capacityId: number, level: number) {
 		const result = await client.query(
 			`INSERT INTO "character_has_capacity" ("character_id", "capacity_id", "level") VALUES ($1, $2, $3) RETURNING *`,
 			[characterId, capacityId, level],
 		)
 
-		fastify.log.info('addCapacityToCharacter : ', result.rows[0])
+		fastify.log.info('Datamapper addAssociationBetweenCapacityAndCharacter : ', result.rows[0])
 		return result.rows[0]
 	},
 
-	async removeCapacityToCharacter(characterId: number, capacityId: number) {
+	async updateAssociationBetweenCapacityAndCharacter(characterId: number, capacityId: number, level: number) {
+		const result = await client.query(
+			`UPDATE "character_has_capacity" SET "level" = $3 WHERE "character_id" = $1 AND "capacity_id" = $2 RETURNING *`,
+			[characterId, capacityId, level],
+		)
+
+		fastify.log.info('Datamapper updateAssociationBetweenCapacityAndCharacter : ', result.rows[0])
+		return result.rows[0]
+	},
+
+	async removeAssociationBetweenCapacityAndCharacter(characterId: number, capacityId: number) {
 		const result = await client.query(
 			`DELETE FROM "character_has_capacity" WHERE character_id = $1 AND capacity_id = $2`,
 			[characterId, capacityId],
 		)
 
-		fastify.log.info('removeCapacityToCharacter : ', !!result.rowCount)
+		fastify.log.info('Datamapper removeAssociationBetweenCapacityAndCharacter : ', !!result.rowCount)
 		return !!result.rowCount
 	},
 }

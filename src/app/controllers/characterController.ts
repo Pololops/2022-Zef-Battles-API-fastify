@@ -13,6 +13,12 @@ export default {
 	getAllInFamily: (fastify: FastifyInstance) => async (request: GetByPk, reply: FastifyReply) => {
 		const familyId = parseInt(request.params.id)
 
+		const family = await familyDatamapper.findByPk(familyId)
+		if (!family) {
+			const errorMessage = 'This family does not exist';
+			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 404 } );
+		}
+
 		const characters = await characterDatamapper.findAllInFamily(familyId)
 
 		fastify.log.info('read : ', characters)
@@ -104,15 +110,16 @@ export default {
 
 	delete: (fastify: FastifyInstance) => async (request: DeleteByPk, reply: FastifyReply) => {
     const id = parseInt(request.params.id)
+		
 		const deletedCharacter = await characterDatamapper.delete(id)
 		if (!deletedCharacter) {
 			const errorMessage = 'This character does not exists';
 			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 404 } );
 		}
 
-		deleteFile(deletedCharacter.picture)
+		deleteFile(deletedCharacter.result.picture)
 
-		fastify.log.info('delete : ', !!deletedCharacter)
+		fastify.log.info('delete : ', deletedCharacter.isDeleted)
 		reply.code(204)
 	},
 
@@ -128,36 +135,33 @@ export default {
 
 		let foundCapacity = await capacityDatamapper.findByName(name);
 
-		if (foundCapacity) {
-			const hasAlreadyThisCapacity = await characterDatamapper.hasCapacity(
-				characterId,
-				foundCapacity.id,
-			);
-
-			if (hasAlreadyThisCapacity) {
-				const errorMessage = 'This character already has this capacity';
-				throw new ApiError(errorMessage, { message: errorMessage, statusCode: 400 } );
-			}
-		} else {
-			if (!name) {
-				const errorMessage = '"capacity name" is required';
-				throw new ApiError(errorMessage, { message: errorMessage, statusCode: 400 } );
-			}
-
+		if (!foundCapacity) {
 			foundCapacity = await capacityDatamapper.insert({
 				name,
 				description,
 			});
 		}
 
-		await characterDatamapper.addCapacityToCharacter(
+		const hasAlreadyThisCapacity = await characterDatamapper.hasCapacity(
 			characterId,
 			foundCapacity.id,
-			level ?? 0,
 		);
+		if (hasAlreadyThisCapacity) {
+			await characterDatamapper.updateAssociationBetweenCapacityAndCharacter(
+				characterId,
+				foundCapacity.id,
+				level,
+			);
+		} else {
+			await characterDatamapper.addAssociationBetweenCapacityAndCharacter(
+				characterId,
+				foundCapacity.id,
+				level ?? 0,
+			);
+		}
 
 		const character = await characterDatamapper.findByPk(characterId);
-		fastify.log.info('getOneByPk : ', character);
+		fastify.log.info('removeCapacityToCharacter : ', character);
 		reply.code(200).send(character);
 	},
 
@@ -166,17 +170,18 @@ export default {
 		const capacityId = parseInt(request.params.capacityId);
 
 		const deletedCharacterHasCapacity =
-			await characterDatamapper.removeCapacityToCharacter(
+			await characterDatamapper.removeAssociationBetweenCapacityAndCharacter(
 				characterId,
 				capacityId,
 			);
 
 		if (!deletedCharacterHasCapacity) {
-			const errorMessage = 'This character does not exists';
+			const errorMessage = 'There is no association between this character and this capacity';
 			throw new ApiError(errorMessage, { message: errorMessage, statusCode: 404 } );
 		}
-
-		fastify.log.info('removeCapacityToCharacter : ', deletedCharacterHasCapacity);
-		reply.code(204)
+		
+		const character = await characterDatamapper.findByPk(characterId);
+		fastify.log.info('removeCapacityToCharacter : ', character);
+		reply.code(200).send(character);
 	}
 }
